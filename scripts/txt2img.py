@@ -61,7 +61,7 @@ def load_model_from_config(config, ckpt, verbose=False):
         print("unexpected keys:")
         print(u)
 
-    model.cuda()
+    model.cuda().half()
     model.eval()
     return model
 
@@ -84,16 +84,15 @@ def load_replacement(x):
     except Exception:
         return x
 
-
 def check_safety(x_image):
-    safety_checker_input = safety_feature_extractor(numpy_to_pil(x_image), return_tensors="pt")
-    x_checked_image, has_nsfw_concept = safety_checker(images=x_image, clip_input=safety_checker_input.pixel_values)
-    assert x_checked_image.shape[0] == len(has_nsfw_concept)
-    for i in range(len(has_nsfw_concept)):
-        if has_nsfw_concept[i]:
-            x_checked_image[i] = load_replacement(x_checked_image[i])
-    return x_checked_image, has_nsfw_concept
-
+#     safety_checker_input = safety_feature_extractor(numpy_to_pil(x_image), return_tensors="pt")
+    # x_checked_image, has_nsfw_concept = safety_checker(images=x_image, clip_input=safety_checker_input.pixel_values)
+#     x_checked_image = x_image
+    # assert x_checked_image.shape[0] == len(has_nsfw_concept)
+    # for i in range(len(has_nsfw_concept)):
+    #     if has_nsfw_concept[i]:
+    #         x_checked_image[i] = load_replacement(x_checked_image[i])
+    return x_image, False # has_nsfw_concept
 
 def main():
     parser = argparse.ArgumentParser()
